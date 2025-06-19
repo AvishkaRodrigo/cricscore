@@ -1,33 +1,33 @@
-document.addEventListener('DOMContentLoaded', function () {
-  const form = document.querySelector('form');
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('match-setup-form');
 
   form.addEventListener('submit', function (e) {
-    e.preventDefault(); // Prevent page reload
+    e.preventDefault();
 
     const team1 = document.getElementById('t1-name').value.trim();
     const team2 = document.getElementById('t2-name').value.trim();
     const overs = document.getElementById('overs').value.trim();
 
-    // Basic validation
     if (!team1 || !team2 || !overs) {
-      alert("Please fill in all fields.");
-      return;
+      return; // Form-level validation already in place
     }
 
-    // Store in localStorage
-    const matchInfo = {
+    const matchData = {
       team1,
       team2,
-      overs: parseFloat(overs)
+      overs: parseInt(overs)
     };
 
-    console.log("Match Info:", matchInfo); // Debugging line to check match info
+    localStorage.setItem('cricSnapMatchInfo', JSON.stringify(matchData));
 
-    localStorage.setItem('cricsnap-matchInfo', JSON.stringify(matchInfo));
+    // Show toast
+    const toastEl = document.getElementById('matchToast');
+    const toast = new bootstrap.Toast(toastEl);
+    toast.show();
 
-    // Redirect or notify
-    alert("Match setup saved!");
-    // Optionally redirect to another page:
-    // window.location.href = "scoreboard.html";
+    // Redirect after 2 seconds
+    setTimeout(() => {
+      window.location.href = 'players_details.html';
+    }, 2000);
   });
 });

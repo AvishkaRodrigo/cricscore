@@ -1,10 +1,23 @@
 body {
-  background: url("assets/bg-cricket.webp") no-repeat center top;
+  position: relative;
+  background-color: #ffffff;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: url("assets/bg-cricket.jpg") no-repeat center center;
   background-size: contain;
   background-attachment: fixed;
-  background-repeat: no-repeat;
-  background-position: center top;
-  background-color: #f8f9fa;
+  opacity: 0.5;
+  z-index: -1;
+  pointer-events: none;
 }
 
 .main-container {
