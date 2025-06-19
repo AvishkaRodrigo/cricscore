@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Team Players - CricSnap</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="main.css">
+</head>
+<body>
+  <nav class="navbar navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">CricSnap</a>
+    </div>
+  </nav>
+  <div class="container mt-3">
+    <h2 class="text-center mb-4">Players details</h2>
+    <div class="table-container">
+      <!-- Team 1 Table -->
+      <div>
+        <h5 class="text-center" id="team1-name">Team 1</h5>
+        <table class="table table-bordered" id="team1-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Player Name</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <div class="d-grid">
+          <button class="btn btn-secondary" onclick="addPlayer('team1')">Add Player</button>
+        </div>
+      </div>
+
+      <!-- Team 2 Table -->
+      <div>
+        <h5 class="text-center" id="team2-name">Team 2</h5>
+        <table class="table table-bordered" id="team2-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Player Name</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <div class="d-grid">
+          <button class="btn btn-secondary" onclick="addPlayer('team2')">Add Player</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center mt-4">
+      <button class="btn btn-dark px-4" onclick="validatePlayers()">Continue</button>
+    </div>
+  </div>
+
+  <script src="players_details.js"></script>
+</body>
+</html>
