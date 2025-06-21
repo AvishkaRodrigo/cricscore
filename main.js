@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
       overs: parseInt(overs)
     };
 
-    localStorage.setItem('cricSnapMatchInfo', JSON.stringify(matchData));
+    localStorage.setItem('cricsnap-matchInfo', JSON.stringify(matchData));
 
     // Show toast
     const toastEl = document.getElementById('matchToast');
