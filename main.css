@@ -12,13 +12,21 @@ body::before {
   left: 0;
   height: 100%;
   width: 100%;
-  background: url("assets/bg-cricket.jpg") no-repeat center center;
+  background: url("assets/logo2.png") no-repeat center center;
   background-size: contain;
   background-attachment: fixed;
   opacity: 0.5;
   z-index: -1;
   pointer-events: none;
 }
+
+/* On mobile screens: use background-size: cover */
+@media (max-width: 768px) {
+  body::before {
+    background-size: cover;
+  }
+}
+
 
 .main-container {
   padding-top: 50px;
@@ -64,17 +72,48 @@ th {
 
 .floating-score-buttons {
   position: fixed;
-  bottom: 10px;
+  bottom: 60px;
   left: 0;
   width: 100%;
-  z-index: 999;
+  /* z-index: 80; */
 }
 
 .glass-card {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
   border-radius: 16px;
+}
+
+
+
+#toastContainer {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 1055;
+  max-width: 300px;
+}
+
+/* Optional: Fade in effect */
+.toast {
+  opacity: 0.95;
+}
+
+.score-glass {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(100, 100, 100, 0.2);
+  color: #000;
+  font-family: 'Orbitron', sans-serif; /* Optional futuristic font */
+  transition: all 0.3s ease-in-out;
+}
+
+.score-glass:hover {
+  box-shadow: 0 6px 30px rgba(0, 0, 0, 0.8);
 }

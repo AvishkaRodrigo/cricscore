@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
   playersData = JSON.parse(localStorage.getItem("cricsnap-players"));
 
   if (!matchData || !playersData) {
-    alert("Match or player data missing!");
+    showToast("Match or player data missing!", "danger");
     return;
   }
 
@@ -29,7 +29,6 @@ document.addEventListener("DOMContentLoaded", () => {
     setupBattingSelection();
   }
 
-  // generateRunButtons();
   updateScoreDisplay();
 });
 
@@ -49,17 +48,6 @@ function selectBattingTeam(team) {
   bootstrap.Modal.getInstance(document.getElementById("battingModal")).hide();
   updateScoreDisplay();
 }
-
-  // function generateRunButtons() {
-  //   const runButtons = document.getElementById("run-buttons");
-  //   for (let i = 0; i <= 7; i++) {
-  //     const btn = document.createElement("button");
-  //     btn.className = "btn btn-primary mx-1";
-  //     btn.innerText = i;
-  //     btn.onclick = () => addRun(i);
-  //     runButtons.appendChild(btn);
-  //   }
-  // }
 
 function addRun(runs) {
   if (!state.battingTeam) return;
@@ -87,6 +75,7 @@ function addExtra(type) {
 
 function addWicket() {
   if (!state.battingTeam) return;
+  showToast(`Out!`, "danger");
 
   const wicketKey = state.battingTeam === "team1" ? "team1Wickets" : "team2Wickets";
   const ballKey = state.battingTeam === "team1" ? "team1Balls" : "team2Balls";
@@ -98,9 +87,8 @@ function addWicket() {
   state[wicketKey] += 1;
   state[ballKey] += 1;
 
-  // Check for All Out
   if (state[wicketKey] >= maxWickets) {
-    alert("All Out!");
+    showToast("All Out!", "warning");
     handleInningChange();
     return;
   }
@@ -110,7 +98,6 @@ function addWicket() {
   updateScoreDisplay();
   checkWinCondition();
 }
-
 
 function checkInningEnd() {
   const ballKey = state.battingTeam === "team1" ? "team1Balls" : "team2Balls";
@@ -123,9 +110,9 @@ function handleInningChange() {
   if (state.currentInning === 1) {
     state.battingTeam = state.battingTeam === "team1" ? "team2" : "team1";
     state.currentInning = 2;
-    alert("Innings over! Switching teams.");
+    showToast("Innings over! Switching teams.", "info");
   } else {
-    alert("Match complete!");
+    showToast("Match complete!", "success");
   }
   saveState();
   updateScoreDisplay();
@@ -138,44 +125,38 @@ function updateScoreDisplay() {
   const team1Display = `${state.team1Wickets}/${state.team1Score} (${overs1})`;
   const team2Display = `${state.team2Wickets}/${state.team2Score} (${overs2})`;
   const scoreText = `
-    ${matchData.team1}: ${team1Display} | ${matchData.team2}: ${team2Display}
-    | Batting: ${matchData[state.battingTeam] || "?"}
+    ${matchData.team1}: ${team1Display} \n ${matchData.team2}: ${team2Display}
+    \n Batting: ${matchData[state.battingTeam] || "?"}
   `;
   document.getElementById("scoreDisplay").innerText = scoreText;
 
-  // === Target Info for 2nd Innings ===
   const targetDiv = document.getElementById("targetDisplay");
   if (state.currentInning === 2) {
-    if (state.currentInning === 2) {
-  const firstBattingTeam = state.battingTeam === "team1" ? "team2" : "team1";
-  const secondBattingTeam = state.battingTeam;
+    const firstBattingTeam = state.battingTeam === "team1" ? "team2" : "team1";
+    const secondBattingTeam = state.battingTeam;
 
-  const firstScore = state[firstBattingTeam + "Score"];
-  const secondScore = state[secondBattingTeam + "Score"];
-  const secondBalls = state[secondBattingTeam + "Balls"];
+    const firstScore = state[firstBattingTeam + "Score"];
+    const secondScore = state[secondBattingTeam + "Score"];
+    const secondBalls = state[secondBattingTeam + "Balls"];
 
-  const target = firstScore + 1;
-  const ballsRemaining = state.maxBalls - secondBalls;
-  const runsNeeded = target - secondScore;
+    const target = firstScore + 1;
+    const ballsRemaining = state.maxBalls - secondBalls;
+    const runsNeeded = target - secondScore;
 
-  if (runsNeeded > 0 && ballsRemaining > 0) {
-    targetDiv.innerText = `Target: Need ${runsNeeded} run${runsNeeded > 1 ? 's' : ''} in ${ballsRemaining} ball${ballsRemaining > 1 ? 's' : ''}`;
-  } else if (runsNeeded <= 0) {
-    targetDiv.innerText = `🎉 ${matchData[secondBattingTeam]} won the match!`;
+    if (runsNeeded > 0 && ballsRemaining > 0) {
+      targetDiv.innerText = `Target: Need ${runsNeeded} run${runsNeeded > 1 ? 's' : ''} in ${ballsRemaining} ball${ballsRemaining > 1 ? 's' : ''}`;
+    } else if (runsNeeded <= 0) {
+      targetDiv.innerText = `🎉 ${matchData[secondBattingTeam]} won the match!`;
+    } else {
+      targetDiv.innerText = `⚠️ Match Over`;
+      showToast(`Match Over`, "secondary");
+    }
   } else {
-    targetDiv.innerText = `⚠️ Match Over`;
-  }
-} else {
-  targetDiv.innerText = "";
-}
-
-  } else {
-    targetDiv.innerText = ""; // Clear during first innings
+    targetDiv.innerText = "";
   }
 }
 
 function checkWinCondition() {
-  // Only evaluate win when second innings is in progress
   if (state.currentInning !== 2) return;
 
   const firstBattingTeam = state.battingTeam === "team1" ? "team2" : "team1";
@@ -190,27 +171,50 @@ function checkWinCondition() {
   const target = firstScore + 1;
 
   if (secondScore >= target) {
-    alert(`${matchData[secondBattingTeam]} won the match!`);
+    showToast(`${matchData[secondBattingTeam]} won the match!`, "success");
     return;
   }
 
   if (secondWickets >= maxWickets || secondBalls >= state.maxBalls) {
-    if (secondScore < target - 1) {
-      alert(`${matchData[firstBattingTeam]} won the match!`);
+    if (secondScore < target) {
+      showToast(`${matchData[firstBattingTeam]} won the match!`, "success");
     } else {
-      alert(`Match tied!`);
+      showToast(`Match tied!`, "secondary");
     }
   }
 }
 
-
-
 function saveState() {
   localStorage.setItem("cricsnap-scoreboard", JSON.stringify(state));
 }
+
 function resetGame() {
   localStorage.removeItem("cricsnap-scoreboard");
   localStorage.removeItem("cricsnap-players");
   localStorage.removeItem("cricsnap-matchInfo");
-  window.location.href = "index.html"
+  window.location.href = "index.html";
+}
+
+function showToast(message, type = "info") {
+  const toastContainer = document.getElementById("toastContainer");
+
+  const toastId = `toast-${Date.now()}`;
+  const toastHtml = `
+    <div id="${toastId}" class="toast align-items-center text-white bg-${type} border-0 mb-2" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body">
+          ${message}
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+    </div>
+  `;
+
+  toastContainer.insertAdjacentHTML("beforeend", toastHtml);
+
+  const toastElement = document.getElementById(toastId);
+  const bsToast = new bootstrap.Toast(toastElement, { delay: 3000 });
+  bsToast.show();
+
+  toastElement.addEventListener("hidden.bs.toast", () => toastElement.remove());
 }
